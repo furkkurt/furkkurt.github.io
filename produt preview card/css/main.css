@@ -763,10 +763,6 @@ body{
     width: 50%;
   }
 
-  .xl\:w-2\/3{
-    width: 66.666667%;
-  }
-
   .xl\:flex-row{
     flex-direction: row;
   }
