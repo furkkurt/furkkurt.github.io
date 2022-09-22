@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-relative{
+	background-size: 150%;
+	background-position: -500px -250px;
+	background-attachment: scroll;
+}
+
+.cubePos{
+  right: 86.5%;
+}
+

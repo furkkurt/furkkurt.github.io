@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	  <head>
+			  <meta charset="UTF-8">
+				<meta http-equiv="X-UA-Compatible" content="IE=edge">
+				<meta name="viewport" content="width=device-width,initial-scale=1.0">
+				<title>FAQ</title>
+				<link rel="stylesheet", href="./css/main.css" />
+			</head>
+			<body>
+				<main role="main" class="flex w-screen h-screen justify-center items-center bg-desktop bg-gradient-to-b from-softViolet to-softBlue">
+					<!-- The Box -->
+					<div class= "flex flex-col w-11/12 h-3/4 mt-56 bg-white rounded-xl md:flex-row md:w-5/6 md:h-3/4 md:my-auto md:overflow-hidden">
+						<!-- Left Side -->
+						<div class="h-full bg-mobile bg-no-repeat 
+							bg-[length:80%] bg-[position:50%_0px] md:w-1/2 md:bg-desktop md:bg-scroll 
+							md:bg-[length:200%] md:bg-[position:-600px_-50px] 
+							lg:bg-[length:190%] lg:bg-[position:-720px_-250px]
+							xl:bg-[length:200%] xl:bg-[position:-920px_-600px]"> 
+							<!-- Desktop Image -->
+							<picture class="w-1/2 h-full">
+								<img class="hidden md:block relative w-full -left-24 top-40" src="./images/illustration-woman-online-desktop.svg" alt=""/>
+							</picture>
+							<!-- Mobile Image -->
+							<picture>
+								<img class="w-3/4 mx-auto -mt-44 relative sm:-mt-52 md:-mt-72 md:hidden" src="./images/illustration-woman-online-mobile.svg" alt=""/>
+							</picture>
+						</div>
+						<!-- Right Side -->
+						<div class="h-full md:w-1/2 pl-8 -mt-64 md:mt-0 md:p-28">
+							<h2 class="font-kumbh text-5xl font-bold">FAQ</h2>
+							<!-- -- Text 1 -->
+							<div class="flex flex-col w-full relative pt-8 md:pt-16" onclick="showText('text1')">
+								<p class="text-2xl pt-50 font-kumbh hover:text-softRed">How many team members can I invite?</p>
+								<img src="images/icon-arrow-down.svg" alt="" class="absolute w-4 right-4 md:pt-3 md:-right-4 lg:-right-12 xl:right-32"/>
+								<p id="text1" class="hidden text-veryDarkBlue font-kumbh pt-6">You can invite up to 2 additional users on the Free plan. There is no limit on team members for the Premium plan.</p>
+							</div>
+							<div class="line"></div>
+							<!-- -- Text 2 -->
+							<div class="flex flex-col w-full relative pt-4" onclick="showText('text2')">
+								<p class="text-2xl pt-50 font-kumbh hover:text-softRed">What is the maximum file upload size?</p>
+								<img src="images/icon-arrow-down.svg" alt="" class="absolute w-4 right-4 md:pt-3 md:-right-4 lg:-right-12 xl:right-32"/>
+								<p id="text2" class="hidden text-veryDarkBlue font-kumbh pt-6">No more than 2GB. All files in your account must fit your allotted storage space.</p>
+								</div>
+							<div class="line"></div>
+							<!-- -- Text 3 -->
+							<div class="flex flex-col w-full relative pt-4" onclick="showText('text3')">
+								<p class="text-2xl pt-50 font-kumbh hover:text-softRed">  How do I reset my password?</p>
+								<img src="images/icon-arrow-down.svg" alt="" class="absolute w-4 right-4 md:pt-3 md:-right-4 lg:-right-12 xl:right-32"/>
+								<p id="text3" class="hidden text-veryDarkBlue font-kumbh pt-6">Click “Forgot password” from the login page or “Change password” from your profile page. A reset link will be emailed to you.</p>
+							</div>
+							<div class="line"></div>
+							<!-- -- Text 4 -->
+							<div class="flex flex-col w-full relative pt-4" onclick="showText('text4')">
+								<p class="text-2xl pt-50 font-kumbh hover:text-softRed">Can I cancel my subscription?</p>
+								<img src="images/icon-arrow-down.svg" alt="" class="absolute w-4 right-4 md:pt-3 md:-right-4 lg:-right-12 xl:right-32"/>
+								<p id="text4" class="hidden text-veryDarkBlue font-kumbh pt-6">Yes! Send us a message and we’ll process your request no questions asked.</p>
+							</div>
+							<div class="line"></div>
+							<!-- -- Text 5 -->
+							<div class="flex flex-col w-full relative pt-4" onclick="showText('text5')">
+								<p class="text-2xl pt-50 font-kumbh hover:text-softRed">Do you provide additional support?</p>
+								<img src="images/icon-arrow-down.svg" alt="" class="absolute w-4 right-4 md:pt-3 md:-right-4 lg:-right-12 xl:right-32"/>
+								<p id="text5" class="hidden text-veryDarkBlue font-kumbh pt-6">Chat and email support is available 24/7. Phone lines are open during normal business hours.</p>
+							</div>
+						</div>
+					</div>
+					<!-- The Cube -->
+					<img class="hidden absolute cubePos top-2/5 md:block lg:top-1/2 xl:top-2/3" src="./images/illustration-box-desktop.svg" alt=""/>
+				</main>
+				<script src="./script.js"></script>
+			</body>
+		</html>
