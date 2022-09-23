@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  <title>Rock, Paper, Scissors, Lizard, Spock</title> 
+  <style>
+    .attribution { font-size: 11px; text-align: center; }
+    .attribution a { color: hsl(228, 45%, 44%); }
+  </style>
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body onLoad="setScore()">
+  <main class="flex flex-col justify-center items-center w-screen h-screen bg-gradient-to-b from-radialGradientFrom to-radialGradientTo">
+    <!-- Score Box -->
+    <div class="absolute flex flex-row w-2/3 h-1/6 top-12 border-4 rounded-xl border-headerOutline p-8 pt-4 sm:pr-12 sm:pt-2">
+      <!-- Title -->
+      <div class="">
+        <p class="font-barlow text-white text-2xl sm:text-3xl">ROCK</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">PAPER</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">SCISSORS</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">LIZARD</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">SPOCK</p>
+      </div>
+      <!-- Score -->
+      <div class="absolute flex justify-center items-center w-1/4 h-5/6 top-3 right-4 bg-white rounded-xl">
+        <h2 class="absolute font-barlow text-scoreText top-2 text-xl sm:text-3xl">S C O R E</h2>
+        <p id="score" class="absolute font-barlow text-darkText bottom-2 text-6xl">00</p>
+      </div>
+    </div>
+    <!-- Icons -->
+    <div id="icons" class="absolute flex justify-center items-center w-2/3 h-2/5 my-auto">
+      <picture>
+        <img class="absolute left-0 right-0 mx-auto top-10 bottom-0 my-auto sm:w-120" src="./img/bg-pentagon.svg" alt=""/>
+        <div onclick="play('scissors')" class="relative flex justify-center items-center top-28 w-28 h-28 rounded-full bg-gradient-to-b from-scissorsGradientFrom to-scissorsGradientTo sm:w-36 sm:h-36 sm:top-32">
+          <div class="absolute w-5/6 h-5/6 -mt-2 bg-slate-300 rounded-full"></div>
+          <div class="absolute flex justify-center items-center w-5/6 h-5/6 mt-2 bg-white rounded-full">
+            <img class="w-2/3 transition ease-in hover:scale-150 sm:w-1/2" src="./img/icon-scissors.svg" alt=""/>
+          </div>
+        </div>
+        <div onclick="play('spock')" class="relative flex justify-center items-center top-24 -left-36 my-auto w-28 h-28 rounded-full bg-gradient-to-b from-spockGradientFrom to-spockGradientTo sm:w-36 sm:h-36 sm:-left-52 sm:top-28">
+          <div class="absolute w-5/6 h-5/6 -mt-2 bg-slate-300 rounded-full"></div>
+          <div class="absolute flex justify-center items-center w-5/6 h-5/6 mt-2 bg-white rounded-full">
+            <img class="w-2/3 transition ease-in hover:scale-150 sm:w-1/2" src="./img/icon-spock.svg" alt=""/>
+          </div>
+        </div>
+        <div onclick="play('paper')" class="relative flex justify-center items-center -top-4 -right-28 my-auto w-28 h-28 rounded-full bg-gradient-to-b from-paperGradientFrom to-paperGradientTo sm:w-36 sm:h-36 sm:-top-8 sm:-right-48">
+          <div class="absolute w-5/6 h-5/6 -mt-2 bg-slate-300 rounded-full"></div>
+          <div class="absolute flex justify-center items-center w-5/6 h-5/6 mt-2 bg-white rounded-full">
+            <img class="w-2/3 transition ease-in hover:scale-150 sm:w-1/2" src="./img/icon-paper.svg" alt=""/>
+          </div>
+        </div>
+        <div onclick="play('rock')" class="relative flex justify-center items-center -bottom-12 right-24 w-28 h-28 rounded-full bg-gradient-to-b from-rockGradientFrom to-rockGradientTo sm:w-36 sm:h-36 sm:-bottom-24 sm:-left-32">
+          <div class="absolute w-5/6 h-5/6 -mt-2 bg-slate-300 rounded-full"></div>
+          <div class="absolute flex justify-center items-center w-5/6 h-5/6 mt-2 bg-white rounded-full">
+            <img class="w-2/3 transition ease-in hover:scale-150 sm:w-1/2" src="./img/icon-rock.svg" alt=""/>
+          </div>
+        </div>
+        <div onclick="play('lizard')" class="relative flex justify-center items-center bottom-16 left-16 w-28 h-28 rounded-full bg-gradient-to-b from-lizardGradientFrom to-lizardGradientTo sm:w-36 sm:h-36 sm:bottom-12 sm:right-4 sm:left-28">
+          <div class="absolute w-5/6 h-5/6 -mt-2 bg-slate-300 rounded-full"></div>
+          <div class="absolute flex justify-center items-center w-5/6 h-5/6 mt-2 bg-white rounded-full">
+            <img class="w-2/3 transition ease-in hover:scale-150 sm:w-1/2" src="./img/icon-lizard.svg" alt=""/>
+          </div>
+        </div>
+      </picture>
+    </div>
+    <!-- Rules Button -->
+    <div id="but" onclick="showRules()" class="absolute flex justify-center items-center w-1/4 h-12 bottom-12 border-headerOutline border-2 rounded-xl transition hover:scale-110 sm:w-44 sm:bottom-12 sm:right-6">
+      <p class="font-barlow text-2xl text-white">RULES</p>
+    </div>
+    <!--  Rules -->
+    <div id="rules" class="hidden absolute flex justify-center items-center bg-white w-screen h-screen rounded-xl sm:w-1/3 sm:h-2/3">
+      <h1 class="absolute font-barlow text-4xl text-darkText top-20 sm:top-2">RULES</h1>
+      <img class="w-3/4" src="./img/image-rules-bonus.svg" alt=""/>
+      <img onclick="showRules()" class="absolute bottom-12 w-1/12 sm:w-10 sm:bottom-2 transition hover:scale-150" src="./img/icon-close.svg" alt=""/>
+    </div>
+  </main> 
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="#">Furkan Kurt</a>.
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>

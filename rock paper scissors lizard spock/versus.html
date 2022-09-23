@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  <title>Rock, Paper, Scissors, Lizard, Spock</title> 
+  <style>
+    .attribution { font-size: 11px; text-align: center; }
+    .attribution a { color: hsl(228, 45%, 44%); }
+  </style>
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body onLoad="setImages()">
+  <main class="flex flex-col justify-center items-center w-screen h-screen bg-gradient-to-b from-radialGradientFrom to-radialGradientTo">
+    <!-- Score Box -->
+    <div class="absolute flex flex-row w-2/3 h-1/6 top-12 border-4 rounded-xl border-headerOutline p-8 pt-4 sm:pr-12 sm:pt-2">
+      <!-- Title -->
+      <div class="">
+        <p class="font-barlow text-white text-2xl sm:text-3xl">ROCK</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">PAPER</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">SCISSORS</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">LIZARD</p>
+        <p class="font-barlow text-white text-2xl -mt-3 sm:text-3xl">SPOCK</p>
+      </div>
+      <!-- Score -->
+      <div class="absolute flex justify-center items-center w-1/4 h-5/6 top-3 right-4 bg-white rounded-xl">
+        <h2 class="absolute font-barlow text-scoreText top-2 text-xl sm:text-3xl">S C O R E</h2>
+        <p id="score" class="absolute font-barlow text-darkText bottom-2 text-6xl sm:text-8px">00</p>
+      </div>
+    </div>
+    <!-- Versus -->
+    <!-- Pick -->
+    <div class="flex flex-row justify-center items-center w-5/6 h-1/2">
+      <div id="versusPick" class="relative flex justify-center items-center left-0 right-0 mx-auto -top-16 w-40 h-40 rounded-full bg-gradient-to-b from-scissorsGradientFrom to-scissorsGradientTo sm:w-64 sm:h-64 sm:top-16">
+        <h2 class="hidden absolute -top-16 left-12 font-barlow text-white text-4xl sm:block">YOU PICKED</h2>
+        <div class="absolute w-5/6 h-5/6 -mt-3 bg-slate-300 rounded-full"></div>
+        <div id="pick" class="absolute flex justify-center items-center w-5/6 h-5/6 mt-3 bg-white rounded-full">
+          <img id="pickImg" class="w-3/5" src="./img/icon-scissors.svg" alt=""/>
+        </div>
+        <h2 class="absolute -bottom-10 font-barlow text-white text-2xl sm:hidden">YOU PICKED</h2>
+      </div>
+
+      <div id="result" class="hidden absolute flex flex-col justify-center items-center bottom-40 sm:relative sm:mt-100">
+        <h1 id="resultText" class="text-6xl text-white font-barlow">YOU LOOSE</h1>
+        <div onclick="again()" class="flex justify-center items-center transition w-3/4 mt-8 h-16 rounded-xl bg-white font-barlow text-darkText text-xl hover:bg-darkText hover:text-white">P L A Y&nbsp;&nbsp;&nbsp;&nbsp;A G A I N</div>
+      </div>
+
+      <!-- Comp -->
+      <div id="versusComp" class="hidden relative flex justify-center items-center left-0 right-0 mx-auto -top-16 w-40 h-40 rounded-full bg-gradient-to-b from-scissorsGradientFrom to-scissorsGradientTo sm:w-64 sm:h-64 sm:top-16">
+        <h2 class="hidden absolute -top-16 right-0 font-barlow text-white text-4xl sm:block">THE HOUSE PICKED</h2>
+        <div class="absolute w-5/6 h-5/6 -mt-3 bg-slate-300 rounded-full"></div>
+        <div id="comp" class="absolute flex justify-center items-center w-5/6 h-5/6 mt-3 bg-white rounded-full">
+          <img id="compImg" class="w-3/5" src="./img/icon-scissors.svg" alt=""/>
+        </div>
+        <h2 class="absolute -bottom-10 font-barlow text-white text-2xl sm:hidden">THE HOUSE PICKED</h2>
+      </div>
+    </div>
+    <!-- Rules Button-->
+    <div class="absolute flex justify-center items-center w-1/4 h-12 bottom-12 border-headerOutline border-2 rounded-xl sm:w-44 sm:bottom-12 sm:right-6">
+      <p class="font-barlow text-2xl text-white">RULES</p>
+    </div>
+    <!--  Rules -->
+    <div class="hidden absolute flex justify-center items-center bg-white w-screen h-screen rounded-xl sm:w-1/3 sm:h-2/3">
+      <h1 class="absolute font-barlow text-4xl text-darkText top-20 sm:top-0">RULES</h1>
+      <img class="w-3/4" src="./img/image-rules-bonus.svg" alt=""/>
+      <img class="absolute bottom-12 w-1/12 sm:w-10 sm:bottom-0" src="./img/icon-close.svg" alt=""/>
+    </div>
+  </main> 
+
+  <div class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
+    Coded by <a href="#">Furkan Kurt</a>.
+  </div>
+  <script src="./script.js"></script>
+</body>
+</html>
