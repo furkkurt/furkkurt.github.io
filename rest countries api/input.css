@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.mt-18{
+  margin-top: 4.5rem;
+}
+
+@media (min-width: 976px){
+  .md\:mt-18{
+    margin-top: 4.5rem;
+  }
+}

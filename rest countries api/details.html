@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>countries</title>
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  </head>
+  <body onload="gatherInfo()">
+    <!-- Nav Bar -->
+    <nav id="nav" class="w-screen h-24 bg-white border-2 font-barlow text-2xl p-8">
+      Where in the world?
+    <p onclick="darkMode()" class="absolute flex justify-center items-center text-2xl right-8 top-6 w-36 h-12 rounded-xl transition hover:scale-110 hover:bg-black hover:text-white">
+      <svg class="w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!-- --! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+    Dark Mode</p>
+    </nav>
+    <!-- Back Button -->
+    <div id="but" onclick="window.location.href='./index.html'" class="absolute flex flex-row ml-8 mt-16 w-40 h-12 bg-white border-2 rounded-xl p-3 transition hover:scale-110">
+      <svg class="w-4"xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- --! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M177.5 98c-8.8-3.8-19-2-26 4.6l-144 136C2.7 243.1 0 249.4 0 256s2.7 12.9 7.5 17.4l144 136c7 6.6 17.2 8.4 26 4.6s14.5-12.5 14.5-22l0-88 288 0c17.7 0 32-14.3 32-32l0-32c0-17.7-14.3-32-32-32l-288 0 0-88c0-9.6-5.7-18.2-14.5-22z"/></svg>
+      <p class="pl-4">Back</p>
+    </div>
+    <main id="main" class="grid grid-cols-1 gap-4 pt-12 place-content-start w-full h-full text-4xl bg-veryLightGray sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <!-- Flag Div -->
+      <div class="flex flex-col justify-center items-center w-screen h-screen pt-80 md:pt-0 md:flex-row">
+        <div class="flex justify-center items-center relative -top-72 w-1/2 h-96 md:-top-48">
+          <img id="flagImg" src="" alt="" class="border-2 w-5/6 mt-56 md:mt-12"/>
+        </div>
+        <!-- Info Div -->
+        <div id=info class="relative -top-80 w-1/2 h-96 md:-top-72 font-barlow p-24">
+          <div class="flex flex-col pt-12 md:flex-row">
+            <div>
+              <p id="name" class="font-barlow">Belgium</p> 
+              <p id="population" class="mt-8 font-barlow text-xl">Population:</p> 
+              <p id="regionI" class="mt-2 font-barlow text-xl">Region:</p> 
+              <p id="subRegion" class="mt-2 font-barlow text-xl">Sub Region:</p> 
+              <p id="capital" class="mt-2 font-barlow text-xl">Capital:</p> 
+            </div>
+            <div class="pt-0 md:p-4 md:pt-0">
+              <p id="domain" class="mt-6 font-barlow text-xl md:mt-18">Top Level Domain:</p> 
+              <p id="currency" class="mt-2 font-barlow text-xl">Currencies:</p> 
+              <p id="languages" class="mt-2 font-barlow text-xl">Languages:</p> 
+            </div>
+          </div>
+          <!-- Borders -->
+          <div id="borders" class="flex flex-row mt-8 text-xl">
+            Border Countries:
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="search"></div>
+    <div id="searchBar"></div>
+    <div id="region"></div>
+    <script src="./script.js"></script>
+  </body>
+</html>

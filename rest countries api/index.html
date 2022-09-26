@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>countries</title>
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png">
+  </head>
+  <body onload="gatherStuff()">
+    <!-- Nav Bar -->
+    <nav id="nav" class="w-screen h-24 bg-white border-2 font-barlow text-2xl p-8">
+      Where in the world?
+      <p onclick="darkMode()" class="absolute flex justify-center items-center text-2xl right-8 top-6 w-36 h-12 rounded-xl transition hover:scale-110 hover:bg-black hover:text-white">
+        <svg class="w-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!-- --! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+        Dark Mode</p>
+    </nav>
+    <!-- Search Bar -->
+    <div id="searchBar" class="absolute flex flex-row ml-8 mt-4 w-1/3 h-16 bg-white border-2 rounded-xl text-xl p-4">
+      <button id="but" onclick="search()" class="w-8 rounded-xl bg-white text-sm transition hover:scale-110">
+        <svg class="w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- --! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg>
+      </button>
+      <input id="search" type="text" class="w-full h-full" placeholder="Search for a country..."/>
+    </div>
+    <select id="region" onclick="filter()" class="absolute right-8 top-28 w-52 h-12 border-2 bg-white rounded-md text-xl text-darkGray">
+      <option value="" disabled selected hidden>Filter by Region</option>
+      <option value="Africa">Africa</option>
+      <option value="America">America</option>
+      <option value="Asia">Asia</option>
+      <option value="Europe">Europe</option>
+      <option value="Ocenia">Ocenia</option>
+      <option value="">All</option>
+    </select>
+    <main id="main" class="grid grid-cols-1 gap-4 pt-12 place-content-start w-full h-full text-4xl bg-veryLightGray sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <!-- Countries -->
+    </main>
+    <div id="detailsMain" class="hidden"></div>
+    <div id="flagImg"></div>
+    <div id="detailsBut"></div>
+    <script src="./script.js"></script>
+  </body>
+</html>
