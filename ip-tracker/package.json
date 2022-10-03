@@ -1,0 +1,17 @@
+{
+  "name": "ip-tracker",
+  "version": "1.0.0",
+  "description": "![Design preview for the IP address tracker coding challenge](./design/desktop-preview.jpg)",
+  "main": "index.js",
+  "scripts": {
+    "build": "sudo npx tailwindcss -i ./input.css -o ./css/main.css",
+    "watch": "sudo npx tailwindcss -i ./input.css -o ./css/main.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jquery": "^3.6.1",
+    "tailwindcss": "^3.1.8"
+  }
+}
