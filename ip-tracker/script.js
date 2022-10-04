@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $.getJSON("http://ip-api.com/json", function(data){
+  $.getJSON("https://ip-api.com/json", function(data){
     $("#ip").text(data.query);
     $("#isp").text(data.isp);
     let offset = new Date().getTimezoneOffset();
@@ -13,7 +13,7 @@ $(document).ready(function() {
 function gatherStuff(){
   let ipInput=document.getElementById("search").value;
   $(document).ready(function() {
-    $.getJSON("http://ip-api.com/json/"+ipInput, function(data){
+    $.getJSON("https://ip-api.com/json/"+ipInput, function(data){
       $("#ip").text(data.query);
       $("#isp").text(data.isp);
       let offset = new Date().getTimezoneOffset();
