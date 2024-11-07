@@ -1,0 +1,198 @@
+<!doctype html>
+<html class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./static/output.css" rel="stylesheet" />
+    <style>
+      .tabcontent {
+        display: none;
+      }
+      .tabcontent table {
+        margin: auto;
+      }
+    </style>
+    <script>
+      function showTable(tableId) {
+        const tables = ["table1", "table2", "table3"];
+        tables.forEach((id) => {
+          const table = document.getElementById(id);
+          if (tableId === id) {
+            table.style.display = "block";
+          } else {
+            table.style.display = "none";
+          }
+        });
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("defaultOpen").click();
+      });
+    </script>
+  </head>
+  <body class="bg-gradient-to-b from-blue-300 to-green-300 min-h-screen">
+  <div class="transition fixed bottom-6 right-6 flex justify-center items-center w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 cursor-pointer"> <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /> </svg> </div>
+    <custom-header></custom-header>
+    <div class="flex justify-center mt-32">
+      <div class="relative w-1/2">
+        <input
+          type="text"
+          class="border border-gray-300 p-4 pl-10 rounded-full shadow-lg w-full focus:outline-none"
+          placeholder="İlaç sorgusu giriniz"
+        />
+        <button
+          class="absolute right-0 top-0 mt-2 mr-4 bg-blue-500 text-white p-2 rounded-full w-16 hover:bg-blue-700"
+        >
+          Ara
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-center mt-16">
+      <div class="w-3/4">
+        <div class="tab text-xl font-bold w-full grid grid-cols-3 mb-8">
+          <button
+            class="tablinks hover:scale-110 transition"
+            onclick="showTable('table1')"
+            id="defaultOpen"
+          >
+            Ruhsatlı İlaçlar
+          </button>
+          <button class="tablinks hover:scale-110 transition" onclick="showTable('table2')">
+            Radyofarmasötik
+          </button>
+          <button class="tablinks hover:scale-110 transition" onclick="showTable('table3')">
+            Alerjen Ürünler
+          </button>
+        </div>
+        <div id="table1" class="tabcontent">
+          <hr class="mb-8">
+          <table
+            class="table-auto w-full text-center border-collapse border border-gray-400 mt-4"
+          >
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">SIRA NO</th>
+                <th class="border border-gray-300 p-2">BARKOD</th>
+                <th class="border border-gray-300 p-2">ÜRÜN ADI</th>
+                <th class="border border-gray-300 p-2">ETKEN MADDE</th>
+                <th class="border border-gray-300 p-2">ATC KODU</th>
+                <th class="border border-gray-300 p-2">RUHSAT SAHİBİ</th>
+                <th class="border border-gray-300 p-2">RUHSAT TARİHİ</th>
+                <th class="border border-gray-300 p-2">RUHSAT NUMARASI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-300 p-2">1</td>
+                <td class="border border-gray-300 p-2">1234567890123</td>
+                <td class="border border-gray-300 p-2">Örnek Ürün</td>
+                <td class="border border-gray-300 p-2">Örnek Madde</td>
+                <td class="border border-gray-300 p-2">A01AB01</td>
+                <td class="border border-gray-300 p-2">Örnek Ruhsat</td>
+                <td class="border border-gray-300 p-2">2023-01-01</td>
+                <td class="border border-gray-300 p-2">123456</td>
+              </tr>
+              <tr>
+                <td class="border border-gray-300 p-2">2</td>
+                <td class="border border-gray-300 p-2">9876543210987</td>
+                <td class="border border-gray-300 p-2">Örnek Ürün</td>
+                <td class="border border-gray-300 p-2">Örnek Madde</td>
+                <td class="border border-gray-300 p-2">B02BC02</td>
+                <td class="border border-gray-300 p-2">Örnek Ruhsat</td>
+                <td class="border border-gray-300 p-2">2022-12-31</td>
+                <td class="border border-gray-300 p-2">654321</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="table2" class="tabcontent">
+          <table
+            class="table-auto w-full text-center border-collapse border border-gray-400 mt-4"
+          >
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">BARKOD</th>
+                <th class="border border-gray-300 p-2">ÜRÜN ADI</th>
+                <th class="border border-gray-300 p-2">AMBALAJ BOYUTU</th>
+                <th class="border border-gray-300 p-2">GEÇİCİ İZİN SAHİBİ</th>
+                <th class="border border-gray-300 p-2">ETKEN MADDE</th>
+                <th class="border border-gray-300 p-2">İMAL/İTHAL</th>
+                <th class="border border-gray-300 p-2">GEÇİCİ İZİN TARİHİ</th>
+                <th class="border border-gray-300 p-2">GEÇİCİ İZİN NO</th>
+                <th class="border border-gray-300 p-2">REÇETE TÜRÜ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-300 p-2">4567890123456</td>
+                <td class="border border-gray-300 p-2">Örnek Ürün 2</td>
+                <td class="border border-gray-300 p-2">20mg</td>
+                <td class="border border-gray-300 p-2">
+                  Örnek Geçici İzin Sahibi
+                </td>
+                <td class="border border-gray-300 p-2">Örnek Madde</td>
+                <td class="border border-gray-300 p-2">İMAL</td>
+                <td class="border border-gray-300 p-2">2023-02-01</td>
+                <td class="border border-gray-300 p-2">789012</td>
+                <td class="border border-gray-300 p-2">Reçete Türü 1</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="table3" class="tabcontent">
+          <table
+            class="table-auto w-full text-center border-collapse border border-gray-400 mt-4"
+          >
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ÜRÜN ADI</th>
+                <th class="border border-gray-300 p-2">FİRMA ADI</th>
+                <th class="border border-gray-300 p-2">ETKEN MADDE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-gray-300 p-2">Örnek Ürün 3</td>
+                <td class="border border-gray-300 p-2">Örnek Firma</td>
+                <td class="border border-gray-300 p-2">Örnek Madde</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    <div class="h-screen grid place-items-center">
+      <div class="w-5/6 mt-32 border-4 border-white rounded-xl h-64 grid grid-cols-5 text-2xl text-bold font-custom3">
+        <div class="border-r-4 border-white grid grid-rows-3 place-items-center p-2">
+          <p>22637</p>
+          <svg class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M112 96c-26.5 0-48 21.5-48 48l0 112 96 0 0-112c0-26.5-21.5-48-48-48zM0 144C0 82.1 50.1 32 112 32s112 50.1 112 112l0 224c0 61.9-50.1 112-112 112S0 429.9 0 368L0 144zM554.9 399.4c-7.1 12.3-23.7 13.1-33.8 3.1L333.5 214.9c-10-10-9.3-26.7 3.1-33.8C360 167.7 387.1 160 416 160c88.4 0 160 71.6 160 160c0 28.9-7.7 56-21.1 79.4zm-59.5 59.5C472 472.3 444.9 480 416 480c-88.4 0-160-71.6-160-160c0-28.9 7.7-56 21.1-79.4c7.1-12.3 23.7-13.1 33.8-3.1L498.5 425.1c10 10 9.3 26.7-3.1 33.8z"/></svg>
+          <p>ADET İLAÇ</p>
+        </div>
+        <div class="border-r-4 border-white grid grid-rows-3 place-items-center p-2">
+          <p>2018</p>
+          <img class="w-16 h-16" src="assets/ingredient.png" />
+          <p>ADET ETKEN MADDE</p>
+        </div>
+        <div class="border-r-4 border-white grid grid-rows-3 place-items-center p-2">
+          <p>638</p>
+          <svg class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M48 0C21.5 0 0 21.5 0 48L0 464c0 26.5 21.5 48 48 48l96 0 0-80c0-26.5 21.5-48 48-48s48 21.5 48 48l0 80 96 0c26.5 0 48-21.5 48-48l0-416c0-26.5-21.5-48-48-48L48 0zM64 240c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zm112-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM80 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16zm80 16c0-8.8 7.2-16 16-16l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32zM272 96l32 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16l-32 0c-8.8 0-16-7.2-16-16l0-32c0-8.8 7.2-16 16-16z"/></svg>
+          <p>ADET ŞİRKET</p>
+        </div>
+        <div class="border-r-4 border-white grid grid-rows-3 place-items-center p-2">
+          <p>22637</p>
+          <img class="w-16 h-16" src="assets/farmo.png" />
+          <p>ADET RADYOFARMASÖTİK MADDE</p>
+        </div>
+        <div class="border-white grid grid-rows-3 place-items-center p-2">
+          <p>22637</p>
+          <svg class="w-16 h-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 208c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-176c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 272c0 1.5 0 3.1 .1 4.6L67.6 283c-16-15.2-41.3-14.6-56.6 1.4s-14.6 41.3 1.4 56.6L124.8 448c43.1 41.1 100.4 64 160 64l19.2 0c97.2 0 176-78.8 176-176l0-208c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 112c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-176c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 176c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-208zM240 336a16 16 0 1 1 32 0 16 16 0 1 1 -32 0zm80 16a16 16 0 1 1 0 32 16 16 0 1 1 0-32zm48-16a16 16 0 1 1 32 0 16 16 0 1 1 -32 0zm-16 80a16 16 0 1 1 0 32 16 16 0 1 1 0-32zM240 432a16 16 0 1 1 32 0 16 16 0 1 1 -32 0zm-48-48a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"/></svg>
+          <p>ADET ALERJEN MADDE</p>
+        </div>
+    </div>
+    </div>
+    <custom-footer></custom-footer>
+    <script src="./components/header.js"></script>
+    <script src="./components/footer.js"></script>
+  </body>
+</html>
