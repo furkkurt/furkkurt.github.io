@@ -28,9 +28,7 @@ function searchDrugs(query) {
         dataList.innerHTML = '';  // Clear existing items
 
         const filteredData = response.data.filter(item =>
-            item['ÜRÜN ADI'].toLowerCase().includes(query) ||
-            item['ETKEN MADDE'].toLowerCase().includes(query) ||
-            item['BARKOD'].toString().includes(query)
+            item['ÜRÜN ADI'].toLowerCase().includes(query)
         );
 
         filteredData.forEach((item, index) => {
