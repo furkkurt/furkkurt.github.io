@@ -10,7 +10,7 @@ template.innerHTML = `
   <body>
     <header class="flex items-center justify-between bg-transparent h-16">
       <!-- Logo -->
-	  <img src="assets/firat.png" class="pl-2 pt-2 h-16" />
+	  <img src="assets/firat.png" class="pl-4 pt-4 h-24" />
       <div class="font-custom1 text-blue-900 overflow-hidden mx-16 hidden justify-items-right lg:block [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]">
         <p class="animate-infinite-scroll w-screen whitespace-nowrap pl-128 text-xl grid justify-items-end">
         	TÜRKİYE'NİN EN GÜNCEL İLAÇ VE PROSPEKTÜS SORGU SİTESİ
@@ -25,6 +25,10 @@ template.innerHTML = `
       </div>
     
     </header>
+    <script src="../functions.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', getDrugs);
+    </script>
   </body>
 `;
 
