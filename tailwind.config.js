@@ -12,6 +12,7 @@ module.exports = {
       backgroundImage: {
         'tp1': "url('/assets/bg.jpg')",
         'newspaper': "url('/assets/newspaper.png')",
+        'bg': "url('../assets/bg.png')",
       },
       colors: {
         brightRed: " #f6866a",

@@ -8,11 +8,11 @@ template.innerHTML = `
     <title>Header Component</title>
   </head>
   <body>
-    <header class="flex items-center justify-between bg-transparent h-16">
+    <header class="flex items-center justify-between bg-transparent h-16 bg-white bg-opacity-25 rounded-lg p-2 pb-8">
       <!-- Logo -->
-	  <img src="assets/firat.png" class="pl-4 pt-4 h-24" />
+	  <img src="assets/firat.png" class="pl-4 h-20 pt-4" />
       <div class="font-custom1 text-blue-900 overflow-hidden mx-16 hidden justify-items-right lg:block [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]">
-        <p class="animate-infinite-scroll w-screen whitespace-nowrap pl-128 text-xl grid justify-items-end">
+        <p class="animate-infinite-scroll w-screen whitespace-nowrap pl-128 text-xl grid justify-items-end pt-2">
         	TÜRKİYE'NİN EN GÜNCEL İLAÇ VE PROSPEKTÜS SORGU SİTESİ
         </p>
       </div>

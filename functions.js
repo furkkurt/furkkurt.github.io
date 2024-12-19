@@ -1,6 +1,6 @@
 const drugsUrl = "https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/drugs";
 let currentPage = 1;
-const itemsPerPage = 20;
+const itemsPerPage = 12;
 
 document.addEventListener('DOMContentLoaded', function() {
     const searchButton = document.getElementById('searchButton');
