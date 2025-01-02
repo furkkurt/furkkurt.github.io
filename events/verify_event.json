@@ -1,0 +1,27 @@
+{
+  "body": "{\"user\":{\"username\":\"mert\",\"name\":\"Mert Köroğlu\"},\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1lcnQiLCJuYW1lIjoiTWVydCBrw7Zyb8SfbHUiLCJpYXQiOjE3MzAyODk1NTUsImV4cCI6MTczMDI4OTg1NX0.gQxw3jKh5OKXNcIRyeWeCSW7Y8Q5tu6v4Yi-02WEsnc\"}",
+  "resource": "/verify",
+  "path": "/verify",
+  "httpMethod": "POST",
+  "isBase64Encoded": false,
+  "queryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "72vmudj22c",
+    "stage": "prod",
+    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+    "identity": {
+      "sourceIp": "127.0.0.1",
+      "userAgent": "Custom User Agent String"
+    },
+    "path": "/verify",
+    "resourcePath": "/verify",
+    "httpMethod": "POST",
+    "apiId": "nzbjdivwzf"
+  }
+}

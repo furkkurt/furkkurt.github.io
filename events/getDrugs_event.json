@@ -1,0 +1,27 @@
+{
+  "body": "{}",
+  "resource": "/drugs",
+  "path": "/drugs",
+  "httpMethod": "GET",
+  "isBase64Encoded": false,
+  "queryStringParameters": {
+    "drugsId": "all",
+    "limit": "20000",
+    "lastEvaluatedKey": null
+  },
+  "pathParameters": {},
+  "stageVariables": {},
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "1vxf9w",
+    "stage": "prod",
+    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+    "identity": {
+      "sourceIp": "127.0.0.1",
+      "userAgent": "Custom User Agent String"
+    }
+  }
+}

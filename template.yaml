@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application Model template describing your function.
+
+Resources:
+  licenceddrugssitebackend:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 310
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      Environment:
+        Variables:
+          JWT_SECRET: mertkrglSecret
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      PackageType: Zip
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+              Resource: arn:aws:logs:eu-north-1:017820664998:*
+            - Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - arn:aws:logs:eu-north-1:017820664998:log-group:/aws/lambda/licenced_drugs_site_backend:*
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /drugs
+            Method: GET
+        Api2:
+          Type: Api
+          Properties:
+            Path: /health
+            Method: GET
+        Api3:
+          Type: Api
+          Properties:
+            Path: /login
+            Method: POST
+        Api4:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: POST
+        Api5:
+          Type: Api
+          Properties:
+            Path: /licenced_drugs_site_backend
+            Method: ANY
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto

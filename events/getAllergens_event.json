@@ -1,0 +1,28 @@
+{
+    "body": "{}",
+    "resource": "/allergens",
+    "path": "/allergens",
+    "httpMethod": "GET",
+    "isBase64Encoded": false,
+    "queryStringParameters": { "allergensId": "all" },
+    "pathParameters": {},
+    "stageVariables": {},
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "requestContext": {
+      "accountId": "123456789012",
+      "resourceId": "jucv89",
+      "stage": "prod",
+      "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+      "identity": {
+        "sourceIp": "127.0.0.1",
+        "userAgent": "Custom User Agent String"
+      },
+      "path": "/allergens",
+      "resourcePath": "/allergens",
+      "httpMethod": "GET",
+      "apiId": "nzbjdivwzf"
+    }
+  }
+  

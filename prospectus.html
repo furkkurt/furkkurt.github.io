@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlaç Prospektüsü</title>
+    <link href="./static/output.css" rel="stylesheet">
+    <script src="./api.js"></script>
+    <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <style>
+        .prospectus-content h1, 
+        .prospectus-content h2, 
+        .prospectus-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .prospectus-content p {
+            margin-bottom: 1rem;
+        }
+
+        .prospectus-content ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media print {
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
+            <div id="drugInfo" class="mb-8">
+                <!-- Drug info will be inserted here -->
+            </div>
+            
+            <div class="border-t pt-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-2xl font-bold">Prospektüs Bilgileri</h2>
+                    <div id="loadingIndicator" class="hidden">
+                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+                    </div>
+                </div>
+                <div id="prospectusContent" class="prose max-w-none">
+                    <!-- AI-generated content will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const prospectusContent = document.getElementById('prospectusContent');
+            
+            // Retrieve drug data from localStorage
+            const prospectusData = JSON.parse(localStorage.getItem('selectedDrug'));
+            
+            if (!prospectusData || !prospectusData.original) {
+                document.getElementById('drugInfo').innerHTML = '<p class="text-red-500">İlaç bilgisi bulunamadı.</p>';
+                return;
+            }
+
+            const drugData = prospectusData.original;
+            const simplifiedName = prospectusData.simplifiedName;
+
+            // Update page title
+            document.title = `${drugData['ÜRÜN ADI']} - Prospektüs`;
+
+            // Display basic drug information
+            document.getElementById('drugInfo').innerHTML = `
+                <h1 class="text-3xl font-bold mb-4 text-blue-600">${drugData['ÜRÜN ADI']}</h1>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="font-semibold">Barkod:</p>
+                        <p>${drugData.BARKOD ?? 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Etken Madde:</p>
+                        <p>${drugData['ETKEN MADDE'] ?? 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold">ATC Kodu:</p>
+                        <p>${drugData['ATC KODU'] ?? 'N/A'}</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold">Ruhsat Sahibi:</p>
+                        <p>${drugData['RUHSAT SAHİBİ'] ?? 'N/A'}</p>
+                    </div>
+                </div>
+            `;
+
+            try {
+                // Show loading indicator
+                loadingIndicator.classList.remove('hidden');
+                
+                // Fetch detailed drug information using simplified name
+                const aiGeneratedContent = await fetchDrugInfo(simplifiedName);
+                
+                // Display the AI-generated content
+                prospectusContent.innerHTML = aiGeneratedContent;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                prospectusContent.innerHTML = `
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4">
+                        <p class="text-red-700">
+                            Üzgünüz, ilaç bilgileri şu anda yüklenemiyor. Lütfen daha sonra tekrar deneyin.
+                        </p>
+                    </div>
+                `;
+            } finally {
+                // Hide loading indicator
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html> 
