@@ -100,7 +100,7 @@ function getDrugs(page = 1) {
     const pageData = window.drugState.cachedData.slice(startIndex, endIndex);
 
     pageData.forEach(item => {
-        const row = document.createElement('tr');
+            const row = document.createElement('tr');
         row.className = 'hover:bg-gray-50';
         row.innerHTML = `
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
@@ -118,8 +118,8 @@ function getDrugs(page = 1) {
             <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT SAHİBİ'] || '-'}</td>
             <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT TARİHİ'] ? new Date(item['RUHSAT TARİHİ']).toLocaleDateString() : '-'}</td>
         `;
-        dataList.appendChild(row);
-    });
+            dataList.appendChild(row);
+        });
 
     window.drugState.currentPage = page;
     updatePageNumbers();
@@ -282,15 +282,15 @@ async function loadAllergenData(page = 1) {
         // Tabloyu güncelle
         dataList.innerHTML = '';
         pageData.forEach(item => {
-            const row = document.createElement('tr');
+        const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50';
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.Etkin_Madde || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.Firma_Adi || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.Urun_Adi || '-'}</td>
             `;
-            dataList.appendChild(row);
-        });
+        dataList.appendChild(row);
+    });
 
         // Sayfalama butonlarını güncelle
         setupAllergenPagination(window.allergenState.cachedData.length, page);
@@ -303,9 +303,9 @@ async function loadAllergenData(page = 1) {
             <tr>
                 <td colspan="3" class="px-6 py-4 text-center text-red-500">
                     Veriler yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.
-                </td>
-            </tr>
-        `;
+            </td>
+        </tr>
+    `;
     }
 }
 
@@ -884,8 +884,8 @@ function performSearch(searchTerm) {
                     break;
             }
         }
-        return;
-    }
+            return;
+        }
 
     // Aktif tabloyu bul
     const activeTable = document.querySelector('.tabcontent[style*="display: block"]');
@@ -946,9 +946,9 @@ function displayDrugResults(filteredData) {
     }
 
     filteredData.forEach(item => {
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50';
-        row.innerHTML = `
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
                 <button onclick='viewProspectus(${JSON.stringify(item).replace(/'/g, "\\'")})'
                         class="text-blue-600 hover:text-blue-800">
@@ -963,9 +963,9 @@ function displayDrugResults(filteredData) {
             <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['ATC KODU'] || '-'}</td>
             <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT SAHİBİ'] || '-'}</td>
             <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT TARİHİ'] ? new Date(item['RUHSAT TARİHİ']).toLocaleDateString() : '-'}</td>
-        `;
-        dataList.appendChild(row);
-    });
+            `;
+            dataList.appendChild(row);
+        });
 }
 
 // Radyofarmasötik sonuçlarını göster
@@ -975,13 +975,13 @@ function displayRadioResults(filteredData) {
 
     dataList.innerHTML = '';
     if (filteredData.length === 0) {
-        dataList.innerHTML = `
-            <tr>
+            dataList.innerHTML = `
+                <tr>
                 <td colspan="3" class="px-6 py-4 text-center text-gray-500">
                     Sonuç bulunamadı
-                </td>
-            </tr>
-        `;
+                    </td>
+                </tr>
+            `;
         return;
     }
 
