@@ -1,0 +1,27 @@
+{
+  "body": "{\"username\": \"mert\",\"email\": \"mertk@email.com\",\"name\": \"Mert köroğlu\",\"password\": \"1234\"}",
+  "resource": "/register",
+  "path": "/register",
+  "httpMethod": "POST",
+  "isBase64Encoded": false,
+  "queryStringParameters": {},
+  "pathParameters": {},
+  "stageVariables": {},
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "requestContext": {
+    "accountId": "123456789012",
+    "resourceId": "hvff8v",
+    "stage": "prod",
+    "requestId": "c6af9ac6-7b61-11e6-9a41-93e8deadbeef",
+    "identity": {
+      "sourceIp": "127.0.0.1",
+      "userAgent": "Custom User Agent String"
+    },
+    "path": "/register",
+    "resourcePath": "/register",
+    "httpMethod": "POST",
+    "apiId": "nzbjdivwzf"
+  }
+}

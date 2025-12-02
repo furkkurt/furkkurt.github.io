@@ -1,0 +1,1155 @@
+================================================================================
+                    STAJ DEFTERİ - İLAÇ BİLGİ SİSTEMİ WEB UYGULAMASI
+================================================================================
+
+Proje Adı: İlaç Bilgi Sistemi Web Uygulaması
+Staj Süresi: 20 İş Günü
+Tarih: [Staj Başlangıç Tarihi] - [Staj Bitiş Tarihi]
+
+================================================================================
+                                1. GÜN
+================================================================================
+
+Bugün stajın ilk gününde proje hakkında detaylı bir bilgilendirme aldım. 
+Projenin amacı, Türkiye'deki ruhsatlı ilaçlar, radyofarmasötik maddeler ve 
+alerjen ürünler hakkında kapsamlı bilgi sağlayan bir web uygulaması geliştirmek.
+
+Günün ilk yarısında proje gereksinimlerini analiz ettim:
+- Kullanıcıların ilaç bilgilerini arayabileceği bir arama sistemi
+- İlaç prospektüslerini görüntüleme özelliği
+- İstatistiksel verilerin gösterilmesi
+- Responsive tasarım ile mobil uyumluluk
+
+İkinci yarısında proje yapısını oluşturdum ve gerekli teknolojileri belirledim:
+- Frontend: HTML5, JavaScript (ES6+), Tailwind CSS
+- Backend: AWS Lambda, DynamoDB
+- API: AWS API Gateway
+- Deployment: GitHub Pages
+
+package.json dosyasını oluşturarak proje bağımlılıklarını tanımladım:
+(package.json 1-5 satırlar)
+{
+  "name": "licenced-drugs-web-site-system-backend",
+  "author": "mert",
+  "version": "1.0.0",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+
+================================================================================
+                                2. GÜN
+================================================================================
+
+Bugün proje klasör yapısını oluşturdum ve temel dosyaları hazırladım. 
+Proje dizin yapısını şu şekilde organize ettim:
+- /components: Yeniden kullanılabilir web component'leri
+- /services: Backend servis fonksiyonları
+- /utils: Yardımcı fonksiyonlar
+- /assets: Statik dosyalar (resimler, PDF'ler)
+- /static: CSS dosyaları
+
+Tailwind CSS konfigürasyonunu yaptım. tailwind.config.js dosyasını oluşturarak 
+proje için özel renk paleti ve tema ayarlarını tanımladım.
+
+Ayrıca temel HTML yapısını oluşturmaya başladım. index.html dosyasının 
+temel iskeletini hazırladım ve Tailwind CSS'i projeye entegre ettim:
+(index.html 1-7 satırlar)
+<!doctype html>
+<html class="scroll-smooth">
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./static/output.css" rel="stylesheet" />
+
+================================================================================
+                                3. GÜN
+================================================================================
+
+Bugün backend API yapısını oluşturmaya başladım. AWS Lambda fonksiyonları için 
+temel handler yapısını index.js dosyasında oluşturdum. API endpoint'lerini 
+tanımladım ve routing mantığını yazdım.
+
+index.js dosyasında temel API yapısını oluşturdum:
+(index.js 1-15 satırlar)
+const registerService = require("./services/register");
+const loginService = require("./services/login");
+const verifyService = require("./services/verify");
+const util = require("./utils/util");
+const drugsService = require("./services/drugs");
+const radiopharmaService = require("./services/radiopharma");
+const allergensService = require("./services/allergens");
+
+const allergensPath = "/allergens";
+const pharmaPath = "/radiopharmaceutical";
+const registerPath = "/register";
+const loginPath = "/login";
+const verifyPath = "/verify";
+const drugsPath = "/drugs";
+const healthpath = "/health";
+
+Handler fonksiyonunda switch-case yapısı ile HTTP metodlarına göre routing 
+yapısını oluşturdum. GET ve POST isteklerini ayırt edecek şekilde kodladım.
+
+================================================================================
+                                4. GÜN
+================================================================================
+
+Bugün ilaç verilerini çekmek için drugs servisini geliştirdim. DynamoDB'den 
+veri çekme işlemlerini implemente ettim.
+
+services/drugs.js dosyasında getAllDrugs ve getDrug fonksiyonlarını yazdım:
+(services/drugs.js 6-24 satırlar)
+async function getAllDrugs(limit, lastEvaluatedKey) {
+  let params = {
+    TableName: drugsTable,
+    Limit: limit,
+    ExclusiveStartKey: lastEvaluatedKey,
+  };
+
+  try {
+    const data = await dynamoDb.scan(params).promise();
+    return util.buildResponse(200, {
+      items: data.Items,
+      lastEvaluatedKey: data.LastEvaluatedKey,
+    });
+  } catch (error) {
+    return util.buildResponse(500, {
+      message: "Server error, please try again later",
+    });
+  }
+}
+
+Sayfalama (pagination) desteği ekledim. lastEvaluatedKey parametresi ile 
+büyük veri setlerini parçalara bölerek çekebilme özelliğini implemente ettim.
+
+Ayrıca index.js'de drugs endpoint'ini tamamladım:
+(index.js 36-51 satırlar)
+case event.httpMethod === "GET" && event.path === drugsPath:
+  let drugsId =
+      event.queryStringParameters && event.queryStringParameters.drugsId;
+    if (drugsId === "all") {
+      const limit =
+        (event.queryStringParameters &&
+          parseInt(event.queryStringParameters.limit)) ||
+        1000;
+      const lastEvaluatedKey =
+        event.queryStringParameters &&
+        JSON.parse(event.queryStringParameters.lastEvaluatedKey || null);
+      response = await drugsService.getAllDrugs(limit, lastEvaluatedKey);
+    } else {
+      response = await drugsService.getDrug(drugsId);
+    }
+    return response;
+
+================================================================================
+                                5. GÜN
+================================================================================
+
+Bugün kullanıcı kimlik doğrulama sistemini geliştirdim. JWT (JSON Web Token) 
+kullanarak güvenli bir authentication mekanizması oluşturdum.
+
+utils/auth.js dosyasında token oluşturma ve doğrulama fonksiyonlarını yazdım:
+(utils/auth.js 3-11 satırlar)
+function generateToken(userInfo) {
+  if (!userInfo) {
+    return null;
+  }
+
+  return jwt.sign(userInfo, process.env.JWT_SECRET, {
+    expiresIn: "300000",
+  });
+}
+
+Login servisini implemente ettim. services/login.js dosyasında kullanıcı 
+giriş işlemlerini yazdım. bcryptjs kütüphanesi ile şifre karşılaştırması 
+yaparak güvenli bir login sistemi oluşturdum:
+(services/login.js 13-32 satırlar)
+async function login(user) {
+  if (!user || !user.username || !user.password) {
+    return util.buildResponse(401, {
+      message: "username and password are required ",
+    });
+  }
+  const username = user.username.toLowerCase().trim();
+  const password = user.password;
+
+  const dynamoUser = await getUser(username);
+  if (!dynamoUser || !dynamoUser.id) {
+    return util.buildResponse(403, {
+      message: "user does not exist",
+    });
+  }
+  if (!bcrypt.compareSync(password, dynamoUser.password)) {
+    return buildResponse(403, {
+      message: "password is incorrect",
+    });
+  }
+
+================================================================================
+                                6. GÜN
+================================================================================
+
+Bugün radyofarmasötik ve alerjen ürünler için servisleri geliştirdim. 
+services/radiopharma.js ve services/allergens.js dosyalarını oluşturdum.
+
+index.js dosyasında bu endpoint'leri ekledim:
+(index.js 53-81 satırlar)
+case event.httpMethod === "GET" && event.path === pharmaPath:
+  let radiopharmaId =
+    event.queryStringParameters &&
+    event.queryStringParameters.radiopharmaId;
+  radiopharmaId =
+    radiopharmaId === "all" ? radiopharmaId : Number(radiopharmaId);
+  console.log("radiopharmaId : ", radiopharmaId);
+  if (radiopharmaId === "all") {
+    response = await util.scanTable("registered_radiopharmaceutical");
+    response = util.buildResponse(200, response);
+  } else {
+    response = await radiopharmaService.getPharma(radiopharmaId);
+  }
+  return response;
+
+case event.httpMethod === "GET" && event.path === allergensPath:
+  let allergensId =
+    event.queryStringParameters &&
+    event.queryStringParameters.allergensId;
+    allergensId =
+    allergensId === "all" ? allergensId : Number(allergensId);
+  console.log("allergensId : ", allergensId);
+  if (allergensId === "all") {
+    response = await util.scanTable("registered_radiopharmaceutical");
+    response = util.buildResponse(200, response);
+  } else {
+    response = await allergensService.getAllergen(allergensId);
+  }
+  return response;
+
+Backend API yapısını tamamladım ve tüm endpoint'lerin çalıştığını test ettim.
+
+================================================================================
+                                7. GÜN
+================================================================================
+
+Bugün frontend tarafında header component'ini oluşturdum. Web Components API 
+kullanarak yeniden kullanılabilir bir header component'i geliştirdim.
+
+components/header.js dosyasında Header sınıfını oluşturdum:
+(components/header.js 1-5 satırlar)
+class Header extends HTMLElement {
+	constructor() {
+		super();
+	}
+
+connectedCallback metodunda header HTML yapısını oluşturdum. Responsive tasarım 
+için mobil menü özelliği ekledim:
+(components/header.js 6-64 satırlar)
+connectedCallback() {
+	this.innerHTML = `
+		<header class="bg-white shadow-lg fixed top-0 left-0 right-0 z-50">
+			<nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+				<div class="flex items-center justify-between h-16">
+					<div class="flex items-center justify-between w-full">
+						<a class="flex-shrink-0" href="index.html">
+							<img class="h-8 sm:h-12 w-auto" src="assets/logo.png" alt="Logo">
+						</a>
+						<div class="hidden md:block">
+							<div class="flex items-baseline space-x-6">
+								<a href="index.html" 
+								   class="text-gray-600 hover:text-blue-600 px-6 py-2 rounded-md text-sm font-medium">
+									Ana Sayfa
+								</a>
+								<a href="about.html" 
+								   class="text-gray-600 hover:text-blue-600 px-6 py-2 rounded-md text-sm font-medium">
+									Hakkımızda
+								</a>
+								<button id="docsButton"
+										class="text-gray-600 hover:text-blue-600 px-6 py-2 rounded-md text-sm font-medium">
+									Dokümanlar
+								</button>
+							</div>
+						</div>
+						<div class="md:hidden">
+							<button id="mobileMenuButton" type="button" 
+									class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+								<span class="sr-only">Menüyü aç</span>
+								<svg id="menuIcon" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+								</svg>
+								<svg id="closeIcon" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+								</svg>
+							</button>
+						</div>
+					</div>
+				</div>
+
+Mobil menü toggle fonksiyonunu ekledim ve custom element olarak kaydettim.
+
+================================================================================
+                                8. GÜN
+================================================================================
+
+Bugün footer component'ini oluşturdum. components/footer.js dosyasında 
+CustomFooter sınıfını yazdım.
+
+Footer yapısını oluşturdum:
+(components/footer.js 1-52 satırlar)
+class CustomFooter extends HTMLElement {
+    connectedCallback() {
+        this.innerHTML = `
+            <footer class="bg-gray-900 text-white mt-20 h-full pb-4">
+                <div class="container mx-auto px-4 py-12">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Hakkımızda</h3>
+                            <p class="text-gray-400 text-sm">
+                                İlaç Bilgi Sistemi, Türkiye'deki ilaçlar hakkında kapsamlı bilgi sunan resmi bir platformdur.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Hızlı Erişim</h3>
+                            <ul class="space-y-2 text-gray-400 text-sm">
+                                <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Ana Sayfa</a></li>
+                                <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">İlaç Sorgula</a></li>
+                                <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">Dokümanlar</a></li>
+                                <li><a href="#" class="hover:text-blue-400 transition-colors duration-200">SSS</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">İletişim</h3>
+                            <ul class="space-y-2 text-gray-400 text-sm">
+                                <li class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                    </svg>
+                                    <span>0552 248 41 38</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                    <span>prospektusebak@gmail.com</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                    <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
+                        <p>&copy; ${new Date().getFullYear()} İlaç Bilgi Sistemi. Tüm hakları saklıdır.</p>
+                    </div>
+                </div>
+            </footer>
+        `;
+    }
+}
+
+customElements.define('custom-footer', CustomFooter);
+
+Footer'ı responsive grid yapısı ile oluşturdum ve iletişim bilgilerini ekledim.
+
+================================================================================
+                                9. GÜN
+================================================================================
+
+Bugün ana sayfa yapısını oluşturmaya başladım. index.html dosyasında arama 
+bölümünü ve tab yapısını ekledim.
+
+Arama input ve dropdown yapısını oluşturdum:
+(index.html 57-98 satırlar)
+<div class="flex justify-center mt-32 px-4 sm:px-0">
+  <div class="relative w-full sm:w-1/2 flex flex-col sm:flex-row gap-2">
+    <!-- Arama Tipi Dropdown -->
+    <div class="relative w-full sm:w-48 mb-2 sm:mb-0">
+      <select id="searchType" class="appearance-none w-full bg-white border border-gray-300 p-4 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="ÜRÜN ADI">Ürün Adı</option>
+        <option value="BARKOD">Barkod</option>
+        <option value="ETKEN MADDE">Etken Madde</option>
+        <option value="ATC KODU">ATC Kodu</option>
+        <option value="RUHSAT SAHİBİ">Ruhsat Sahibi</option>
+      </select>
+      <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Arama Input -->
+    <div class="relative flex-1">
+      <input
+        id="searchInput"
+        type="text"
+        class="border border-gray-300 p-4 pl-10 rounded-full shadow-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Arama yapmak için yazın..."
+        autocomplete="off"
+      />
+      <button
+        id="searchButton"
+        class="absolute right-0 top-0 mt-2 mr-4 bg-blue-500 text-white p-2 rounded-full w-16 hover:bg-blue-700"
+      >
+        Ara
+      </button>
+
+      <!-- Öneriler -->
+      <div id="searchSuggestions" 
+        class="absolute w-full mt-1 bg-white rounded-lg shadow-lg max-h-60 overflow-y-auto hidden z-50 left-0 right-0 sm:top-16">
+        <!-- Suggestions will be inserted here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+Tab yapısını oluşturdum. Üç farklı tab: Ruhsatlı İlaçlar, Radyofarmasötik ve 
+Alerjen Ürünler için tab butonlarını ekledim.
+
+================================================================================
+                                10. GÜN
+================================================================================
+
+Bugün tablo yapılarını oluşturdum. Her tab için ayrı tablo yapısı hazırladım. 
+İlaçlar tablosu için detaylı sütunlar ekledim:
+(index.html 129-156 satırlar)
+<div id="table1" class="tabcontent block">
+  <hr class="mb-8 border-blue-200" />
+  <div class="bg-white rounded-lg shadow-lg">
+    <div class="overflow-x-auto">
+      <table class="min-w-full table-auto">
+        <thead>
+          <tr class="bg-gray-50">
+            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prospektüs</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Barkod</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ürün Adı</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Etken Madde</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ATC Kodu</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruhsat Sahibi</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ruhsat Tarihi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="drugPagination" class="mt-32 flex justify-center gap-2">
+    <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="getDrugs(1)"><<</button>
+    <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="getDrugs(window.drugState.currentPage - 1)"><</button>
+    <span class="px-3 py-1 bg-gray-100 rounded" id="currentPage">1</span>
+    <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="getDrugs(window.drugState.currentPage + 1)">></button>
+    <button class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600" onclick="getDrugs(Math.ceil(window.drugState.cachedData.length / window.drugState.itemsPerPage))">>></button>
+  </div>
+</div>
+
+Radyofarmasötik ve Alerjen tabloları için de benzer yapıları oluşturdum. 
+Sayfalama butonlarını her tablo için ekledim.
+
+================================================================================
+                                11. GÜN
+================================================================================
+
+Bugün API entegrasyonunu yapmaya başladım. api.js dosyasını oluşturarak 
+backend API endpoint'lerini tanımladım.
+
+API URL'lerini ve fonksiyonlarını oluşturdum:
+(api.js 1-4 satırlar)
+// API endpoint'leri
+const drugsUrl = "https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/drugs";
+const radioUrl = "https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/radiopharmaceutical";
+const allergenUrl = "https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/allergens";
+
+fetchDrugs, fetchRadiopharmaceuticals ve fetchAllergens fonksiyonlarını 
+yazdım. Axios kütüphanesi kullanarak HTTP isteklerini yaptım:
+(api.js 115-128 satırlar)
+export const fetchDrugs = async (drugsId = 'all') => {
+    const response = await axios.get(`${drugsUrl}?drugsId=${drugsId}`);
+    return response.data;
+};
+
+export const fetchRadiopharmaceuticals = async () => {
+    const response = await axios.get(`${radioUrl}?radiopharmaId=all`);
+    return response.data;
+};
+
+export const fetchAllergens = async () => {
+    const response = await axios.get(`${allergenUrl}?allergensId=all`);
+    return response.data;
+};
+
+API çağrılarını test ettim ve veri çekme işlemlerinin çalıştığını doğruladım.
+
+================================================================================
+                                12. GÜN
+================================================================================
+
+Bugün functions.js dosyasında veri yükleme ve görüntüleme fonksiyonlarını 
+yazdım. Global state yönetimi için window objesi üzerinde state objeleri 
+oluşturdum:
+(functions.js 9-26 satırlar)
+// Global state objects
+window.drugState = {
+    currentPage: 1,
+    itemsPerPage: 12,
+    cachedData: null,
+    isLoading: false
+};
+
+window.radioState = {
+    currentPage: 1,
+    itemsPerPage: 12,
+    cachedData: null
+};
+
+window.allergenState = {
+    currentPage: 1,
+    itemsPerPage: 12,
+    cachedData: null
+};
+
+initializeCache fonksiyonunu yazarak ilaç verilerini yükleme işlemini 
+implemente ettim. Büyük veri setleri için sayfalama desteği ekledim:
+(functions.js 29-62 satırlar)
+async function initializeCache() {
+    try {
+        if (window.drugState.isLoading) {
+            console.log('Already loading data...');
+            return;
+        }
+
+        window.drugState.isLoading = true;
+        
+        // İlk 1000 veriyi yükle
+        const url = `${drugsUrl}?drugsId=all&limit=1000`;
+        const initialResponse = await axios.get(url);
+        
+        if (!initialResponse.data || !initialResponse.data.items) {
+                throw new Error('No data received from API');
+            }
+            
+        window.drugState.cachedData = initialResponse.data.items;
+        console.log('Initial data loaded:', window.drugState.cachedData.length);
+        
+        getDrugs(1);
+        
+        // Geri kalan verileri arka planda yükle
+        loadRemainingDataInBackground(initialResponse.data.lastEvaluatedKey);
+        
+        await updateStatistics(); // İstatistikleri güncelle
+        
+    } catch (error) {
+        console.error("Error initializing cache:", error);
+        showError('Failed to load initial data. Please refresh the page.');
+    } finally {
+        window.drugState.isLoading = false;
+    }
+}
+
+getDrugs fonksiyonunu yazarak tabloya veri gösterme işlemini tamamladım.
+
+================================================================================
+                                13. GÜN
+================================================================================
+
+Bugün arama fonksiyonlarını geliştirdim. Arama önerileri (autocomplete) 
+özelliğini ekledim. showSearchSuggestions fonksiyonunu yazdım:
+(functions.js 814-857 satırlar)
+function showSearchSuggestions(searchTerm) {
+    const suggestionsList = document.getElementById('searchSuggestions');
+    if (!suggestionsList) return;
+
+    // Arama terimi boşsa önerileri gizle
+    if (!searchTerm.trim()) {
+        suggestionsList.innerHTML = '';
+        suggestionsList.classList.add('hidden');
+        return;
+    }
+
+    // Cache'den sonuçları al veya hesapla
+    let suggestions;
+    if (searchCache.has(searchTerm)) {
+        suggestions = searchCache.get(searchTerm);
+    } else {
+        suggestions = window.drugState.cachedData
+            .filter(drug => {
+                const searchLower = searchTerm.toLowerCase();
+                return (
+                    (drug['ÜRÜN ADI'] || '').toLowerCase().includes(searchLower) ||
+                    (drug['ETKEN MADDE'] || drug['ETKİN MADDE'] || '').toLowerCase().includes(searchLower) ||
+                    (drug['RUHSAT SAHİBİ'] || '').toLowerCase().includes(searchLower)
+                );
+            })
+            .slice(0, 5); // Sadece ilk 5 öneriyi göster
+        searchCache.set(searchTerm, suggestions);
+    }
+
+    // Önerileri göster
+    suggestionsList.innerHTML = suggestions
+        .map(drug => `
+            <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer" 
+                onclick="selectSuggestion('${drug['ÜRÜN ADI'].replace(/'/g, "\\'")}')">
+                <div class="font-medium">${drug['ÜRÜN ADI']}</div>
+                <div class="text-sm text-gray-600">
+                    ${drug['ETKEN MADDE'] || drug['ETKİN MADDE'] || '-'} | ${drug['RUHSAT SAHİBİ'] || '-'}
+                </div>
+            </li>
+        `)
+        .join('');
+
+    suggestionsList.classList.remove('hidden');
+}
+
+performSearch fonksiyonunu yazarak aktif tabloya göre arama yapma özelliğini 
+ekledim. Debounce mekanizması ile performansı optimize ettim.
+
+================================================================================
+                                14. GÜN
+================================================================================
+
+Bugün arama fonksiyonlarını tamamladım. Her tablo tipi için özel arama 
+fonksiyonları yazdım: displayDrugResults, displayRadioResults ve 
+displayAllergenResults.
+
+İlaç sonuçlarını gösterme fonksiyonunu yazdım:
+(functions.js 932-969 satırlar)
+function displayDrugResults(filteredData) {
+    const dataList = document.querySelector('#table1 tbody');
+    if (!dataList) return;
+
+    dataList.innerHTML = '';
+    if (filteredData.length === 0) {
+        dataList.innerHTML = `
+            <tr>
+                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                    Sonuç bulunamadı
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    filteredData.forEach(item => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50';
+            row.innerHTML = `
+            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-500">
+                <button onclick='viewProspectus(${JSON.stringify(item).replace(/'/g, "\\'")})'
+                        class="text-blue-600 hover:text-blue-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
+                    </svg>
+                </button>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item.BARKOD || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-900">${item['ÜRÜN ADI'] || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['ETKEN MADDE'] || item['ETKİN MADDE'] || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['ATC KODU'] || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT SAHİBİ'] || '-'}</td>
+            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item['RUHSAT TARİHİ'] ? new Date(item['RUHSAT TARİHİ']).toLocaleDateString() : '-'}</td>
+            `;
+            dataList.appendChild(row);
+        });
+}
+
+Arama input event listener'ını ekledim ve 300ms debounce ile optimize ettim.
+
+================================================================================
+                                15. GÜN
+================================================================================
+
+Bugün prospektüs görüntüleme özelliğini geliştirdim. viewProspectus 
+fonksiyonunu yazarak ilaç bilgilerini yeni bir pencerede gösterme özelliğini 
+ekledim.
+
+Prospektüs penceresi için HTML yapısını oluşturdum:
+(functions.js 480-660 satırlar)
+window.viewProspectus = async function(drugData) {
+    let loadingWindow;
+    try {
+        // Yeni pencere aç
+        loadingWindow = window.open('', '_blank', 'width=800,height=800');
+        
+        // Temel HTML yapısını oluştur
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>İlaç Prospektüsü - ${drugData['ÜRÜN ADI']}</title>
+                <style>
+                    body { 
+                        font-family: Arial, sans-serif; 
+                        line-height: 1.6; 
+                        margin: 0; 
+                        padding: 20px;
+                        background-color: #f0f9ff;
+                    }
+                    .container {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        background-color: white;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    h1 { 
+                        color: #1e40af;
+                        margin-bottom: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid #1e40af;
+                    }
+                    .info-box {
+                        background-color: #f3f4f6;
+                        padding: 15px;
+                        border-radius: 4px;
+                        margin-bottom: 20px;
+                    }
+                    .info-label {
+                        font-weight: bold;
+                        color: #4b5563;
+                    }
+                    .section {
+                        margin-bottom: 20px;
+                    }
+                    .section h2 {
+                        color: #1e40af;
+                        font-size: 1.2em;
+                        margin-bottom: 10px;
+                    }
+                    .note {
+                        background-color: #fee2e2;
+                        padding: 15px;
+                        border-radius: 4px;
+                        margin-top: 20px;
+                    }
+                    .buttons {
+                        margin-top: 20px;
+                        text-align: center;
+                    }
+                    button {
+                        padding: 8px 16px;
+                        margin: 0 5px;
+                        border: none;
+                        border-radius: 4px;
+                        cursor: pointer;
+                        font-weight: bold;
+                    }
+                    .print-btn {
+                        background-color: #2563eb;
+                        color: white;
+                    }
+                    .print-btn:hover {
+                        background-color: #1d4ed8;
+                    }
+                    .close-btn {
+                        background-color: #6b7280;
+                        color: white;
+                    }
+                    .close-btn:hover {
+                        background-color: #4b5563;
+                    }
+                    ul {
+                        list-style-type: disc;
+                        padding-left: 20px;
+                    }
+                    @media print {
+                        body { 
+                            background-color: white;
+                            padding: 0;
+                        }
+                        .container {
+                            box-shadow: none;
+                        }
+                        .buttons {
+                            display: none;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>${drugData['ÜRÜN ADI']}</h1>
+                    
+                    <div class="info-box">
+                        <p><span class="info-label">Etken Madde:</span> ${drugData['ETKEN MADDE'] || drugData['ETKİN MADDE'] || '-'}</p>
+                        <p><span class="info-label">Ruhsat Sahibi:</span> ${drugData['RUHSAT SAHİBİ'] || '-'}</p>
+                    </div>
+
+Prospektüs içeriğini oluşturdum ve yazdırma özelliği ekledim.
+
+================================================================================
+                                16. GÜN
+================================================================================
+
+Bugün prospektüs içeriğini tamamladım. İlaç bilgilerini kategorize ederek 
+gösterdim: İlacın Tanımı, Kullanım Alanları, Kullanım Şekli ve Dozu, 
+Olası Yan Etkiler, Saklama Koşulları.
+
+Prospektüs HTML yapısını tamamladım:
+(functions.js 591-638 satırlar)
+<div class="section">
+    <h2>1. İlacın Tanımı</h2>
+    <p>${drugData['ÜRÜN ADI']}, ${drugData['ETKEN MADDE'] || drugData['ETKİN MADDE']} etken maddesini içeren, 
+    ${drugData['RUHSAT SAHİBİ']} firması tarafından üretilen bir ilaçtır.</p>
+</div>
+
+<div class="section">
+    <h2>2. Kullanım Alanları</h2>
+    <ul>
+        <li>Doktorunuzun belirttiği hastalıkların tedavisinde kullanılır</li>
+        <li>Kesin kullanım alanları için doktorunuza danışınız</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>3. Kullanım Şekli ve Dozu</h2>
+    <ul>
+        <li>İlacı mutlaka doktorunuzun önerdiği şekilde kullanınız</li>
+        <li>Önerilen dozu aşmayınız</li>
+        <li>Tedavi süresince doktorunuzun kontrolünde kullanınız</li>
+        <li>İlacı düzenli olarak kullanınız</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>4. Olası Yan Etkiler</h2>
+    <ul>
+        <li>Her ilaçta olduğu gibi bu ilacın da yan etkileri olabilir</li>
+        <li>Herhangi bir yan etki görmeniz durumunda doktorunuza başvurunuz</li>
+        <li>Alerjik reaksiyon belirtileri görürseniz ilacı kullanmayı bırakıp hemen doktorunuza danışınız</li>
+    </ul>
+</div>
+
+<div class="section">
+    <h2>5. Saklama Koşulları</h2>
+    <ul>
+        <li>İlacı 25°C'nin altındaki oda sıcaklığında saklayınız</li>
+        <li>Çocukların göremeyeceği ve erişemeyeceği yerlerde saklayınız</li>
+        <li>Son kullanma tarihi geçmiş ilaçları kullanmayınız</li>
+        <li>Orijinal ambalajında saklayınız</li>
+    </ul>
+</div>
+
+<div class="note">
+    <strong>ÖNEMLİ NOT:</strong> Bu bilgiler genel bilgilendirme amaçlıdır. 
+    Her hasta için özel durumlar olabileceğinden, ilacın kullanımı konusunda 
+    mutlaka doktorunuzun önerilerine uyunuz.
+</div>
+
+Yazdırma ve kapatma butonlarını ekledim.
+
+================================================================================
+                                17. GÜN
+================================================================================
+
+Bugün chatbot özelliğini eklemeye başladım. OpenAI API entegrasyonu için 
+api.js dosyasında askOpenAI fonksiyonunu oluşturdum. Rate limiting ve 
+retry mekanizması ekledim.
+
+RateLimiter sınıfını oluşturdum:
+(api.js 12-74 satırlar)
+class RateLimiter {
+    constructor() {
+        this.queue = [];
+        this.isProcessing = false;
+        this.retryDelays = [10000, 20000, 30000]; // 10, 20, 30 saniye
+        this.maxRetries = 3;
+        this.lastRequestTime = 0;
+        this.minRequestInterval = 2000; // Minimum 2 saniye ara
+    }
+
+    async addToQueue(prompt) {
+        return new Promise((resolve, reject) => {
+            this.queue.push({
+                prompt,
+                resolve,
+                reject,
+                attempts: 0
+            });
+            
+            if (!this.isProcessing) {
+                this.processQueue();
+            }
+        });
+    }
+
+    async processQueue() {
+        if (this.queue.length === 0) {
+            this.isProcessing = false;
+            return;
+        }
+
+        this.isProcessing = true;
+        const item = this.queue[0];
+
+        try {
+            // İstekler arası minimum süreyi bekle
+            const timeSinceLastRequest = Date.now() - this.lastRequestTime;
+            if (timeSinceLastRequest < this.minRequestInterval) {
+                await new Promise(resolve => setTimeout(resolve, this.minRequestInterval - timeSinceLastRequest));
+            }
+
+            const response = await this.makeRequest(item.prompt);
+            this.lastRequestTime = Date.now();
+            item.resolve(response);
+            this.queue.shift();
+            await this.processQueue();
+        } catch (error) {
+            console.log('API Error:', error.response?.status, error.response?.data);
+            
+            if (error.response?.status === 429 && item.attempts < this.maxRetries) {
+                item.attempts++;
+                const delay = this.retryDelays[item.attempts - 1];
+                console.log(`Rate limit hit, retrying in ${delay/1000} seconds... (Attempt ${item.attempts}/${this.maxRetries})`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                await this.processQueue();
+            } else {
+                const errorMessage = error.response?.data?.error?.message || error.message;
+                item.reject(new Error(`OpenAI API Error: ${errorMessage}`));
+                this.queue.shift();
+                await this.processQueue();
+            }
+        }
+    }
+
+Chatbot UI'ını index.html'e ekledim.
+
+================================================================================
+                                18. GÜN
+================================================================================
+
+Bugün chatbot fonksiyonlarını tamamladım. initializeChat fonksiyonunu yazarak 
+chat butonu, mesaj gönderme ve mesaj görüntüleme özelliklerini ekledim.
+
+Chat mesaj ekleme fonksiyonunu yazdım:
+(functions.js 712-741 satırlar)
+function addMessageToChat(type, message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    
+    if (type === 'user') {
+        messageDiv.className = 'flex items-start justify-end space-x-2 mb-4';
+        messageDiv.innerHTML = `
+            <div class="bg-blue-600 text-white rounded-lg p-3 max-w-[80%]">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+    } else if (type === 'bot') {
+        messageDiv.className = 'flex items-start space-x-2 mb-4';
+        messageDiv.innerHTML = `
+            <div class="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+        } else {
+        messageDiv.className = 'flex items-start space-x-2 mb-4';
+        messageDiv.innerHTML = `
+            <div class="bg-red-100 text-red-600 rounded-lg p-3 max-w-[80%]">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+    }
+
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+Chat container'ı index.html'e ekledim:
+(index.html 286-313 satırlar)
+<div id="chat-container" class="fixed bottom-24 right-6 w-[90vw] sm:w-96 bg-white rounded-lg shadow-xl hidden z-50">
+    <div class="flex justify-between items-center p-4 border-b">
+        <h3 class="text-lg font-semibold">İlaç Bilgi Asistanı</h3>
+        <button id="close-chat" class="text-gray-500 hover:text-gray-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+    <div id="chat-messages" class="p-4 h-96 overflow-y-auto space-y-4">
+        <!-- Karşılama mesajı -->
+        <div class="flex items-start space-x-2">
+            <div class="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                <p class="text-sm">Merhaba! Size nasıl yardımcı olabilirim? İlaçlar hakkında bilgi almak için soru sorabilirsiniz.</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-4 border-t">
+        <form id="chat-form" class="flex space-x-2">
+            <input type="text" id="chat-input" class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Mesajınızı yazın...">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+Chatbot'un çalışmasını test ettim.
+
+================================================================================
+                                19. GÜN
+================================================================================
+
+Bugün istatistikler bölümünü ve sayfalama fonksiyonlarını tamamladım. 
+updateStatistics fonksiyonunu yazarak sayfa üzerinde dinamik istatistikler 
+gösterme özelliğini ekledim.
+
+İstatistik güncelleme fonksiyonunu yazdım:
+(functions.js 762-807 satırlar)
+async function updateStatistics() {
+    try {
+        // İlaç verileri için istatistikler
+        if (window.drugState.cachedData) {
+            // Toplam ilaç sayısı
+            document.querySelector('[data-stat="total-drugs"]').textContent = 
+                window.drugState.cachedData.length;
+
+            // Benzersiz etken madde sayısı
+            const uniqueIngredients = new Set();
+            window.drugState.cachedData.forEach(drug => {
+                const ingredient = drug['ETKEN MADDE'] || drug['ETKİN MADDE'];
+                if (ingredient) uniqueIngredients.add(ingredient);
+            });
+            document.querySelector('[data-stat="unique-ingredients"]').textContent = 
+                uniqueIngredients.size;
+
+            // Benzersiz firma sayısı
+            const uniqueCompanies = new Set();
+            window.drugState.cachedData.forEach(drug => {
+                if (drug['RUHSAT SAHİBİ']) uniqueCompanies.add(drug['RUHSAT SAHİBİ']);
+            });
+            document.querySelector('[data-stat="unique-companies"]').textContent = 
+                uniqueCompanies.size;
+        }
+
+        // Radyofarmasötik verileri için istatistikler
+        if (!window.radioState.cachedData) {
+            const response = await axios.get('https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/radiopharmaceutical?radiopharmaId=all');
+            window.radioState.cachedData = response.data;
+        }
+        document.querySelector('[data-stat="radio-count"]').textContent = 
+            window.radioState.cachedData.length;
+
+        // Alerjen verileri için istatistikler
+        if (!window.allergenState.cachedData) {
+            const response = await axios.get('https://nzbjdivwzf.execute-api.eu-north-1.amazonaws.com/prod/allergens?allergensId=all');
+            window.allergenState.cachedData = response.data;
+        }
+        document.querySelector('[data-stat="allergen-count"]').textContent = 
+            window.allergenState.cachedData.length;
+
+    } catch (error) {
+        console.error('İstatistikler güncellenirken hata:', error);
+    }
+}
+
+İstatistik kartlarını index.html'e ekledim. Sayfalama fonksiyonlarını 
+tamamladım: setupRadioPagination ve setupAllergenPagination fonksiyonlarını 
+yazdım.
+
+================================================================================
+                                20. GÜN
+================================================================================
+
+Bugün stajın son gününde projeyi test ettim ve son düzeltmeleri yaptım. 
+Hakkımızda sayfasını (about.html) oluşturdum ve içeriğini tamamladım.
+
+about.html sayfasını oluşturdum:
+(about.html 1-70 satırlar)
+<!DOCTYPE html>
+<html class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hakkımızda - İlaç Bilgi Sistemi</title>
+    <link href="./static/output.css" rel="stylesheet">
+</head>
+<body class="bg-about bg-contain bg-top bg-no-repeat bg-blue-200 min-h-screen">
+    <custom-header></custom-header>
+
+    <div class="container mx-auto px-4 py-16">
+        <div class="bg-white bg-opacity-90 rounded-lg shadow-lg p-8 max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold text-blue-800 mb-6">Hakkımızda</h1>
+            
+            <div class="space-y-6 text-gray-700">
+                <p>
+                    İlaç Bilgi Sistemi, Türkiye'deki ilaçlar hakkında kapsamlı ve güncel bilgi sağlayan resmi bir platformdur. 
+                    Türkiye İlaç ve Tıbbi Cihaz Kurumu (TİTCK) tarafından desteklenen bu sistem, sağlık profesyonelleri ve 
+                    vatandaşlar için güvenilir bir bilgi kaynağı olarak hizmet vermektedir.
+                </p>
+
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold text-blue-700 mb-4">Misyonumuz</h2>
+                    <p>
+                        Türkiye'deki tüm ilaçlar hakkında doğru, güncel ve erişilebilir bilgi sağlayarak toplum sağlığına 
+                        katkıda bulunmak ve ilaç güvenliği konusunda farkındalık oluşturmak.
+                    </p>
+                </div>
+
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold text-blue-700 mb-4">Vizyonumuz</h2>
+                    <p>
+                        İlaç bilgi sistemleri alanında Türkiye'nin en güvenilir ve kapsamlı platformu olmak, 
+                        kullanıcı dostu arayüzümüz ve güncel veritabanımızla sektöre öncülük etmek.
+                    </p>
+                </div>
+
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold text-blue-700 mb-4">Hizmetlerimiz</h2>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li>Güncel ilaç veritabanı</li>
+                        <li>İlaç prospektüs bilgileri</li>
+                        <li>Etken madde bilgileri</li>
+                        <li>ATC kodları</li>
+                        <li>Ruhsat bilgileri</li>
+                        <li>İlaç-ilaç etkileşimleri</li>
+                    </ul>
+                </div>
+
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold text-blue-700 mb-4">İletişim</h2>
+                    <p>
+                        Sorularınız ve önerileriniz için bize ulaşabilirsiniz:
+                        <br>
+                        Email: info@ilacbilgi.gov.tr
+                        <br>
+                        Tel: 0312 123 45 67
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <custom-footer></custom-footer>
+    <script src="./components/header.js"></script>
+    <script src="./components/footer.js"></script>
+</body>
+</html>
+
+Tüm fonksiyonları test ettim, hata ayıklama yaptım ve responsive tasarımı 
+kontrol ettim. Projeyi GitHub Pages'e deploy etmek için hazırladım.
+
+================================================================================
+                              STAJ SONU DEĞERLENDİRME
+================================================================================
+
+Bu 20 günlük staj süresince, modern web teknolojileri kullanarak kapsamlı bir 
+ilaç bilgi sistemi geliştirdim. Projede şu teknolojileri kullandım:
+
+- Frontend: HTML5, JavaScript (ES6+), Tailwind CSS, Web Components API
+- Backend: AWS Lambda, DynamoDB, AWS API Gateway
+- API Entegrasyonları: OpenAI API (Chatbot için)
+- Deployment: GitHub Pages
+
+Projenin temel özellikleri:
+1. İlaç arama ve filtreleme sistemi
+2. Prospektüs görüntüleme özelliği
+3. İstatistiksel veri gösterimi
+4. Chatbot entegrasyonu
+5. Responsive tasarım
+6. Sayfalama (pagination) desteği
+7. Kullanıcı kimlik doğrulama sistemi
+
+Staj süresince backend ve frontend geliştirme, API entegrasyonu, veritabanı 
+yönetimi ve kullanıcı arayüzü tasarımı konularında deneyim kazandım. Proje 
+başarıyla tamamlandı ve production ortamına hazır hale getirildi.
+
+================================================================================
+
